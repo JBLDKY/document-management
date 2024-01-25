@@ -1,9 +1,11 @@
 #include "FileOps.h"
+#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <sstream>
+#include <system_error>
 #include <vector>
 
 std::string FileOps::readFile(const std::string &filePath) {
@@ -53,4 +55,25 @@ void FileOps::listFiles(const std::string &directoryPath) {
   for (const auto &entry : std::filesystem::directory_iterator(directoryPath)) {
     std::cout << entry.path() << std::endl;
   }
+}
+
+FileInfo FileOps::getFileInfo(const std::string &filePath) {
+  FileInfo info;
+  std::filesystem::path path(filePath);
+
+  try {
+    if (std::filesystem::exists(path)) {
+      info.filePath = filePath;
+      info.fileSize = std::filesystem::file_size(path);
+
+      auto ftime = std::filesystem::last_write_time(path);
+      info.lastModifiedTime = decltype(ftime)::clock::to_sys(ftime);
+      // info.lastModifiedTime = std::chrono::sys_time(ftime);
+    }
+  } catch (const std::filesystem::filesystem_error &e) {
+
+    std::cout << "Invalid / bad file at: " << path << std::endl;
+  }
+
+  return info;
 }

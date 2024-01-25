@@ -4,6 +4,15 @@
 #include <string>
 #include <vector>
 
+#include <chrono>
+
+struct FileInfo {
+  std::string filePath;
+  std::uintmax_t fileSize;
+  std::chrono::system_clock::time_point creationTime;
+  std::chrono::system_clock::time_point lastModifiedTime;
+};
+
 class FileOps {
 public:
   // string
@@ -21,6 +30,7 @@ public:
   // fs / info
   static void listFiles(const std::string &directoryPath);
   static void printFileInfo(const std::string &filePath);
+  FileInfo getFileInfo(const std::string &filePath);
 };
 
 #endif
