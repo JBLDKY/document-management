@@ -1,5 +1,6 @@
 #include "FileOps.h"
 #include <chrono>
+#include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -43,12 +44,13 @@ void FileOps::writeFileBytes(const std::string &filePath,
   file.write(data.data(), data.size());
 }
 
-void FileOps::printFileInfo(const std::string &filePath) {
-  std::filesystem::path path(filePath);
-  if (std::filesystem::exists(path)) {
-    std::cout << "Size: " << std::filesystem::file_size(path) << " bytes"
-              << std::endl;
-  }
+void FileOps::printFileInfo(const FileInfo &fileInfo) {
+  std::time_t lastModified =
+      std::chrono::system_clock::to_time_t(fileInfo.lastModifiedTime);
+
+  std::cout << "File Path: " << fileInfo.filePath << std::endl;
+  std::cout << "File size: " << fileInfo.fileSize << " bytes" << std::endl;
+  std::cout << "Last modified: " << lastModified << std::endl;
 }
 
 void FileOps::listFiles(const std::string &directoryPath) {
@@ -67,7 +69,7 @@ FileInfo FileOps::getFileInfo(const std::string &filePath) {
       info.fileSize = std::filesystem::file_size(path);
 
       auto ftime = std::filesystem::last_write_time(path);
-      info.lastModifiedTime = decltype(ftime)::clock::to_sys(ftime);
+      // info.lastModifiedTime = decltype(ftime)::clock::to_sys(ftime);
       // info.lastModifiedTime = std::chrono::sys_time(ftime);
     }
   } catch (const std::filesystem::filesystem_error &e) {

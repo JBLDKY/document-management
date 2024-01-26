@@ -29,8 +29,8 @@ public:
 
   // fs / info
   static void listFiles(const std::string &directoryPath);
-  static void printFileInfo(const std::string &filePath);
-  FileInfo getFileInfo(const std::string &filePath);
+  static void printFileInfo(const FileInfo &fileInfo);
+  static FileInfo getFileInfo(const std::string &filePath);
 };
 
 #endif

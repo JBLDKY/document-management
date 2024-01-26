@@ -6,9 +6,11 @@ int main() {
 
   const std::string filePath = "./example_dump.txt";
 
-  FileOps::listFiles("./");
+  // FileOps::listFiles("./");
+  //
+  const FileInfo fileInfo = FileOps::getFileInfo(filePath);
 
-  FileOps::printFileInfo(filePath);
+  FileOps::printFileInfo(fileInfo);
 
   return 0;
 }
