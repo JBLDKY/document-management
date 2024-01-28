@@ -11,12 +11,14 @@ CONFIG += c++11
 SOURCES += \
     DatabaseManager.cpp \
     FileEnums.cpp \
+    MetadataTableWidget.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     DatabaseManager.h \
     FileEnums.h \
+    MetadataTableWidget.h \
     UserData.h \
     mainwindow.h
 

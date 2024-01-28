@@ -17,6 +17,8 @@ public:
     void dropTable(const QString &table);
     // FileName is provided separately
     void addFileEntry(const QFileInfo fileinfo, const UserData userData);
+
+    UserData findSelectedFile(const QString &filePath);
 };
 
 #endif // DATABASEMANAGER_H

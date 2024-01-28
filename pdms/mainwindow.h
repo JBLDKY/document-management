@@ -5,6 +5,7 @@
 #include <QFileSystemModel>
 #include <DatabaseManager.h>
 #include <QSqlTableModel>
+#include<QTableWidget>
 
 namespace Ui { class MainWindow; }
 
@@ -18,8 +19,11 @@ public:
     void selectCallback();
     void switchToLocalFileSystemView();
     void switchToVaultView();
+    void populateUIWithUserData(UserData &userData);
+
     void setupViews();
 
+    bool vaultView;
     QFileSystemModel *model; // filepath for TreeView
     QSqlTableModel *dbModel; // database for TableView
     void setTreeViewPath(QString);

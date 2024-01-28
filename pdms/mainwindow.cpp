@@ -16,6 +16,7 @@
 #include "FileEnums.h"
 #include <QSqlTableModel>
 #include <QTableView>
+#include "MetadataTableWidget.h"
 
 
 const QString MainWindow::DEFAULT_PATH_LOCAL = "/home/jord/";
@@ -29,13 +30,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         MainWindow::setupViews();
         selectCallback();
 
+        MetadataTableWidget* metadataWidget = qobject_cast<MetadataTableWidget*>(ui->metadataTableWidget);
+
+        if (metadataWidget) {
+            metadataWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+            connect(metadataWidget, &QTableWidget::itemChanged, metadataWidget, &MetadataTableWidget::onMetadataItemChanged);
+        }
+
         // DB IMPL
         this->dbModel = new QSqlTableModel(this);
         dbModel->setTable("files");
         dbModel->select();
         ui->databaseTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
         ui->databaseTableView->setModel(dbModel);
-
 
         // dbManager.dropTable("files");
         // dbManager.dropTable("file_metadata");
@@ -44,18 +51,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         // dbManager.dropTable("file_tag_mapping");
     };
 
-
 void MainWindow::setupViews() {
     this->model = new QFileSystemModel(this);
     this->model->setRootPath(QDir::homePath());
 
     ui->treeView->setModel(this->model);
     switchToVaultView();
+    this->vaultView = true;
 }
 
 void MainWindow::switchToVaultView() {
     this->model->setRootPath(DEFAULT_PATH_VAULT);
     ui->treeView->setRootIndex(this->model->index(DEFAULT_PATH_VAULT));
+    this->vaultView = true;
 
 }
 
@@ -63,6 +71,7 @@ void MainWindow::switchToLocalFileSystemView() {
     QString localPath = QDir::homePath();
     this->model->setRootPath(localPath);
     ui->treeView->setRootIndex(this->model->index(localPath));
+    this->vaultView = false;
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
@@ -106,9 +115,51 @@ void MainWindow::selectCallback()
                 qDebug() << "Selected item:" << this->model->filePath(index);
                 MainWindow::handleDroppedFile(this->model->filePath(index));
                 qDebug() << "Name:" << this->model->fileName(index);
+
+                if (this->vaultView){
+                UserData userData = dbManager.findSelectedFile(this->model->filePath(index));
+                populateUIWithUserData(userData);
+                }
             }
         }
     });
+
+}
+
+void MainWindow::populateUIWithUserData(UserData &userData){
+    qDebug() << "Populating with: " << userData.metadata;
+    if (!userData.category.isEmpty()){
+        this->ui->categoryComboBox->setCurrentText(userData.category);
+    }
+
+    if (userData.version){
+        this->ui->versionLineEdit->setText(QString(userData.version));
+    } else {
+        this->ui->versionLineEdit->setText("0");
+    }
+
+    if (!userData.tags.isEmpty()){
+        this->ui->tagsLineEdit->setText(userData.tags.join(", "));
+    }
+
+    this->ui->permissionsComboBox->setCurrentText(permissionsToString(userData.permissions));
+    this->ui->retentionPolicyComboBox->setCurrentText(retentionPolicyToString(userData.retentionPolicy));
+    this->ui->statusComboBox->setCurrentText(fileStatusToString(userData.fileStatus));
+
+    QMapIterator<QString, QString> i(userData.metadata);
+    this->ui->metadataTableWidget->clearContents();
+    this->ui->metadataTableWidget->setRowCount(0);
+    while (i.hasNext()) {
+        i.next();
+          int currentRow = this->ui->metadataTableWidget->rowCount();
+          this->ui->metadataTableWidget->insertRow(currentRow);
+
+          QTableWidgetItem* keyItem = new QTableWidgetItem(i.key());
+          this->ui->metadataTableWidget->setItem(currentRow, 0, keyItem);  // 0 for the first column
+
+          QTableWidgetItem* valueItem = new QTableWidgetItem(i.value());
+          this->ui->metadataTableWidget->setItem(currentRow, 1, valueItem);  // 1 for the second column
+    }
 }
 
 MainWindow::~MainWindow() {
@@ -118,7 +169,6 @@ MainWindow::~MainWindow() {
 void MainWindow::on_actionLocal_triggered() {
     switchToLocalFileSystemView();
 }
-
 
 void MainWindow::on_actionVault_triggered() {
     switchToVaultView();
@@ -227,4 +277,3 @@ void MainWindow::on_tableComboBox_activated(const QString &table)
     dbModel->select();
     ui->databaseTableView->setModel(dbModel);
 }
-

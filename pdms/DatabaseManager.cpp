@@ -16,6 +16,54 @@ DatabaseManager::~DatabaseManager() {
     }
 }
 
+ UserData DatabaseManager::findSelectedFile(const QString &filePath){
+    QSqlQuery query;
+    UserData userData;
+    int fileId = -1;
+
+    query.prepare("SELECT fm.key, fm.value FROM file_metadata fm INNER JOIN files f ON fm.file_id = f.file_id WHERE f.path = :filePath");
+    query.bindValue(":filePath", filePath);
+
+    query.prepare("SELECT file_id, status, retention_policy, version FROM files WHERE path = :filePath");
+    query.bindValue(":filePath", filePath);
+
+    if (query.exec() && query.next()) {
+        fileId = query.value(0).toInt();
+        userData.fileStatus = stringToFileStatus(query.value(1).toString());
+        userData.retentionPolicy = stringToRetentionPolicy(query.value(2).toString());
+        userData.version = query.value(3).toInt();
+    } else {
+        qDebug() << "Selected file could not be found" << query.lastError().text();
+    }
+
+    if (fileId != -1) {
+          // Retrieve and set metadata
+          QSqlQuery metadataQuery;
+          metadataQuery.prepare("SELECT key, value FROM file_metadata WHERE file_id = :fileId");
+          metadataQuery.bindValue(":fileId", fileId);
+
+          if (metadataQuery.exec()) {
+              while (metadataQuery.next()) {
+                  QString key = metadataQuery.value(0).toString();
+                  QString value = metadataQuery.value(1).toString();
+                  userData.metadata.insert(key, value);
+              }
+          }
+
+          // Retrieve and set tags
+          QSqlQuery tagsQuery;
+          tagsQuery.prepare("SELECT t.tag FROM file_tags t INNER JOIN file_tag_mapping m ON t.tag_id = m.tag_id WHERE m.file_id = :fileId");
+          tagsQuery.bindValue(":fileId", fileId);
+
+          if (tagsQuery.exec()) {
+              while (tagsQuery.next()) {
+                  userData.tags.append(tagsQuery.value(0).toString());
+              }
+          }
+      }
+    return userData;
+}
+
 void DatabaseManager::setupDatabase() {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("pdms.db");

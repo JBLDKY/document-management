@@ -506,13 +506,13 @@
        </property>
       </item>
      </widget>
-     <widget class="QTableWidget" name="metadataTableWidget">
+     <widget class="MetadataTableWidget" name="metadataTableWidget">
       <property name="geometry">
        <rect>
         <x>550</x>
         <y>390</y>
         <width>281</width>
-        <height>51</height>
+        <height>201</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -691,6 +691,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MetadataTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header>MetadataTableWidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
