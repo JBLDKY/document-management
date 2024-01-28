@@ -8,9 +8,12 @@
 #include <QMimeData>
 #include <QDebug>
 #include <QString>
+#include <QMap>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "DatabaseManager.h"
+#include "UserData.h"
+#include "FileEnums.h"
 #include <QSqlTableModel>
 #include <QTableView>
 
@@ -23,14 +26,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         ui->setupUi(this);
         setAcceptDrops(true);
 
-        // FS
-        QString target_dir = "/home/jord/projects/dms/pdms/vault";
-        this->model = new QFileSystemModel(this);
-        this->model->setRootPath(target_dir);
-
-        // TreeView
-        ui->treeView->setModel(this->model);
-        ui->treeView->setRootIndex(this->model->index(QDir::currentPath()));
+        MainWindow::setupViews();
         selectCallback();
 
         // DB IMPL
@@ -47,6 +43,27 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         // dbManager.dropTable("file_tags");
         // dbManager.dropTable("file_tag_mapping");
     };
+
+
+void MainWindow::setupViews() {
+    this->model = new QFileSystemModel(this);
+    this->model->setRootPath(QDir::homePath());
+
+    ui->treeView->setModel(this->model);
+    switchToVaultView();
+}
+
+void MainWindow::switchToVaultView() {
+    this->model->setRootPath(DEFAULT_PATH_VAULT);
+    ui->treeView->setRootIndex(this->model->index(DEFAULT_PATH_VAULT));
+
+}
+
+void MainWindow::switchToLocalFileSystemView() {
+    QString localPath = QDir::homePath();
+    this->model->setRootPath(localPath);
+    ui->treeView->setRootIndex(this->model->index(localPath));
+}
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 {
@@ -70,12 +87,12 @@ void MainWindow::handleDroppedFile(QString filePath)
         this->activeFile = filePath;
 
         QFileInfo file(filePath);
-        ui->fileNameLineEdit->setText(file.fileName());
-        ui->fileLastModifiedTimeEdit->setDateTime(file.lastModified());
-        ui->fileCreatedTimeEdit->setDateTime(file.birthTime());
-        ui->fileOwnerLineEdit->setText(file.owner());
-        ui->fileSizeLineEdit->setText(QString::number(file.size()));
-        ui->fileVersionLineEdit->setText("0");
+        ui->nameLineEdit->setText(file.fileName());
+        ui->lastModifiedTimeEdit->setDateTime(file.lastModified());
+        ui->createdTimeEdit->setDateTime(file.birthTime());
+        ui->ownerLineEdit->setText(file.owner());
+        ui->sizeLineEdit->setText(QString::number(file.size()));
+        ui->versionLineEdit->setText("0");
 }
 
 void MainWindow::selectCallback()
@@ -99,15 +116,12 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_actionLocal_triggered() {
-    const QString target_dir = "/home/jord/";
-    qDebug() << "Setting treeview path to " << target_dir;
-    MainWindow::setTreeViewPath(target_dir);
+    switchToLocalFileSystemView();
 }
 
+
 void MainWindow::on_actionVault_triggered() {
-    const QString target_dir = "/home/jord/projects/dms/pdms/vault";
-    qDebug() << "Setting treeview path to " << target_dir;
-    MainWindow::setTreeViewPath(target_dir);
+    switchToVaultView();
 }
 
 void MainWindow::setTreeViewPath(QString path){
@@ -154,10 +168,42 @@ void MainWindow::on_savePushButton_clicked()
        return;
    }
 
-    // Create new database entry
-    dbManager.addFileEntry(fileInfo.fileName(), fileInfo.absoluteFilePath(), fileInfo.size(),
-                           fileInfo.suffix(), fileInfo.birthTime(), fileInfo.lastModified(),
-                           fileInfo.owner(), "active", 0, "standard", "veryCleverCustomTag");
+    /*
+     * Create new database entry from the destination file.
+     * The copied file might have a new name/path/extension according to the user input.
+     */
+
+   QMap<QString, QString> metadata;
+
+   for(int i = 0; i < this->ui->metadataTableWidget->rowCount(); i++){
+       if (this->ui->metadataTableWidget->item(i,0) == nullptr ||
+            this->ui->metadataTableWidget->item(i,1) == nullptr){
+           continue;
+       }
+       qDebug() <<  this->ui->metadataTableWidget->item(i, 0);
+       QString key(this->ui->metadataTableWidget->item(i, 0)->text());
+       QString value(this->ui->metadataTableWidget->item(i, 1)->text());
+
+       qDebug() << "key :" << key;
+       qDebug() << "value :" << value;
+
+       metadata[key] = value;
+   }
+
+   const QFileInfo fi((QFile(destination)));
+   UserData userData;
+    userData.category = this->ui->categoryComboBox->currentText();
+    userData.fileStatus = stringToFileStatus(this->ui->statusComboBox->currentText());
+    userData.metadata = metadata;
+    userData.permissions = stringToPermissions(this->ui->permissionsComboBox->currentText());
+    userData.retentionPolicy = stringToRetentionPolicy(this->ui->retentionPolicyComboBox->currentText());
+    userData.tags = QStringList(this->ui->tagsLineEdit->text().toLower().trimmed().split(","));
+
+    // Handle error, preferably in frontend
+    // Actually, this just returns 0
+    userData.version = ui->versionLineEdit->text().toInt();
+
+   dbManager.addFileEntry(fi, userData);
 }
 
 void MainWindow::on_addDummyFileButton_clicked()

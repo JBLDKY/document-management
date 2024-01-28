@@ -16,6 +16,10 @@ public:
     void dropEvent(QDropEvent *e);
     void handleDroppedFile(QString filePath);
     void selectCallback();
+    void switchToLocalFileSystemView();
+    void switchToVaultView();
+    void setupViews();
+
     QFileSystemModel *model; // filepath for TreeView
     QSqlTableModel *dbModel; // database for TableView
     void setTreeViewPath(QString);

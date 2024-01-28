@@ -4,6 +4,8 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QDateTime>
+#include <QFileSystemModel>
+#include <UserData.h>
 
 class DatabaseManager {
 public:
@@ -13,11 +15,8 @@ public:
     ~DatabaseManager();
     void addDummyFile();
     void dropTable(const QString &table);
-    void addFileEntry(const QString& name, const QString& path, qint64 size,
-                      const QString& type, const QDateTime& creationDate,
-                      const QDateTime& modificationDate, const QString& owner,
-                      const QString& status, int version, const QString& retentionPolicy,
-                      const QString& tag);
+    // FileName is provided separately
+    void addFileEntry(const QFileInfo fileinfo, const UserData userData);
 };
 
 #endif // DATABASEMANAGER_H

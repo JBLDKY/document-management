@@ -3,6 +3,7 @@
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlDatabase>
 #include <QDateTime>
+#include <QFileSystemModel>
 
 DatabaseManager::DatabaseManager() {
     setupDatabase();
@@ -172,26 +173,22 @@ int DatabaseManager::addTagAndGetId(const QString& tag) {
     }
 }
 
-void DatabaseManager::addFileEntry(const QString& name, const QString& path, qint64 size,
-                                   const QString& type, const QDateTime& creationDate,
-                                   const QDateTime& modificationDate, const QString& owner,
-                                   const QString& status, int version, const QString& retentionPolicy,
-                                   const QString& tag) {
+void DatabaseManager::addFileEntry(const QFileInfo fileInfo, const UserData userData) {
     QSqlQuery query;
 
     // files
     query.prepare("INSERT INTO files (name, path, size, type, creation_date, modification_date, owner_id, status, version, retention_policy) "
                   "VALUES (:name, :path, :size, :type, :creation_date, :modification_date, :owner_id, :status, :version, :retention_policy)");
-    query.bindValue(":name", name);
-    query.bindValue(":path", path);
-    query.bindValue(":size", size);
-    query.bindValue(":type", type);
-    query.bindValue(":creation_date", creationDate);
-    query.bindValue(":modification_date", modificationDate);
-    query.bindValue(":owner_id", owner);  // Adjust according to your owner_id handling
-    query.bindValue(":status", status);
-    query.bindValue(":version", version);
-    query.bindValue(":retention_policy", retentionPolicy);
+    query.bindValue(":name", fileInfo.fileName());
+    query.bindValue(":path", fileInfo.absoluteFilePath());
+    query.bindValue(":size", fileInfo.size());
+    query.bindValue(":type", fileInfo.suffix());
+    query.bindValue(":creation_date", fileInfo.birthTime());
+    query.bindValue(":modification_date", fileInfo.lastModified());
+    query.bindValue(":owner_id", fileInfo.owner());  // Adjust according to your owner_id handling
+    query.bindValue(":status", fileStatusToString(userData.fileStatus));
+    query.bindValue(":version", userData.version);
+    query.bindValue(":retention_policy", retentionPolicyToString(userData.retentionPolicy));
     if (!query.exec()) {
         qDebug() << "Error adding file to database:" << query.lastError().text();
     }
@@ -199,35 +196,44 @@ void DatabaseManager::addFileEntry(const QString& name, const QString& path, qin
     // Now create the fileId for use in the other tables
     int fileId = query.lastInsertId().toInt();
 
-    // Insert into 'file_metadata' table
-    query.prepare("INSERT INTO file_metadata (file_id, key, value) VALUES (:file_id, :key, :value)");
-    query.bindValue(":file_id", fileId);
-    query.bindValue(":key", "dummyKey");
-    query.bindValue(":value", "dummyValue");
-    if (!query.exec()) {
-        qDebug() << "Error adding file metadata:" << query.lastError().text();
+    //Unpack metadata
+    QMapIterator<QString, QString> i(userData.metadata);
+    while (i.hasNext()) {
+        i.next();
+
+        // Insert entry per metadata key, value pair into 'file_metadata' table
+        query.prepare("INSERT INTO file_metadata (file_id, key, value) VALUES (:file_id, :key, :value)");
+        query.bindValue(":file_id", fileId);
+        query.bindValue(":key", i.key());
+        query.bindValue(":value", i.value());
+        if (!query.exec()) {
+            qDebug() << "Error adding file metadata:" << query.lastError().text();
+        }
     }
 
     // Insert into 'file_access' table
     query.prepare("INSERT INTO file_access (file_id, user_id, permission_type) VALUES (:file_id, :user_id, :permission_type)");
     query.bindValue(":file_id", fileId);
     query.bindValue(":user_id", 1);
-    query.bindValue(":permission_type", "read");
+    query.bindValue(":permission_type", permissionsToString(userData.permissions));
     if (!query.exec()) {
         qDebug() << "Error adding file_access:" << query.lastError().text();
     }
 
-    // Need to get this from UI somehow
-    int tagId = addTagAndGetId(tag);
-
-    if (tagId != -1) {
-        // Insert into 'file_tag_mapping' table
-        query.prepare("INSERT INTO file_tag_mapping (file_id, tag_id) VALUES (:file_id, :tag_id)");
-        query.bindValue(":file_id", fileId);
-        query.bindValue(":tag_id", tagId);
-        if (!query.exec()) {
-            qDebug() << "Error mapping tag to file:" << query.lastError().text();
+    QStringList tags = userData.tags;
+    foreach (const QString &tag, tags) {
+        int tagId = addTagAndGetId(tag);
+        if (tagId != -1) {
+            // Insert into 'file_tag_mapping' table for each tag
+            QSqlQuery query;
+            query.prepare("INSERT INTO file_tag_mapping (file_id, tag_id) VALUES (:file_id, :tag_id)");
+            query.bindValue(":file_id", fileId); // fileId is the ID of the file you inserted earlier
+            query.bindValue(":tag_id", tagId);
+            if (!query.exec()) {
+                qDebug() << "Error mapping tag to file:" << query.lastError().text();
+            }
+        } else {
+            qDebug() << "Error getting/adding tag ID for tag:" << tag;
         }
     }
-
 }

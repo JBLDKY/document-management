@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1135</width>
-    <height>783</height>
+    <width>1255</width>
+    <height>973</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -20,34 +20,34 @@
    <widget class="QStackedWidget" name="stackedWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>-20</y>
-      <width>1131</width>
-      <height>731</height>
+      <x>-90</x>
+      <y>-40</y>
+      <width>1341</width>
+      <height>961</height>
      </rect>
     </property>
     <widget class="QWidget" name="dms">
-     <widget class="QLineEdit" name="fileNameLineEdit">
+     <widget class="QLineEdit" name="nameLineEdit">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>550</x>
-        <y>280</y>
+        <y>90</y>
         <width>281</width>
         <height>25</height>
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="fileNameLabel">
+     <widget class="QLabel" name="nameLabel">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>550</x>
-        <y>260</y>
+        <y>70</y>
         <width>62</width>
         <height>17</height>
        </rect>
@@ -56,14 +56,14 @@
        <string>File name</string>
       </property>
      </widget>
-     <widget class="QLabel" name="fileCategoryLabel">
+     <widget class="QLabel" name="categoryLabel">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>550</x>
-        <y>310</y>
+        <y>120</y>
         <width>62</width>
         <height>17</height>
        </rect>
@@ -76,20 +76,50 @@
       <property name="geometry">
        <rect>
         <x>550</x>
-        <y>330</y>
+        <y>140</y>
         <width>281</width>
         <height>25</height>
        </rect>
       </property>
+      <item>
+       <property name="text">
+        <string>Other</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Taxes</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Programming</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Sales</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Car</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Work</string>
+       </property>
+      </item>
      </widget>
-     <widget class="QLabel" name="fileTagsLabel">
+     <widget class="QLabel" name="tagsLabel">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>550</x>
-        <y>360</y>
+        <y>170</y>
         <width>62</width>
         <height>17</height>
        </rect>
@@ -98,14 +128,14 @@
        <string>Tags</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="fileTagsLineEdit">
+     <widget class="QLineEdit" name="tagsLineEdit">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>550</x>
-        <y>380</y>
+        <y>190</y>
         <width>281</width>
         <height>25</height>
        </rect>
@@ -114,15 +144,15 @@
        <string/>
       </property>
      </widget>
-     <widget class="QLineEdit" name="fileOwnerLineEdit">
+     <widget class="QLineEdit" name="ownerLineEdit">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
-        <x>550</x>
-        <y>430</y>
-        <width>281</width>
+        <x>860</x>
+        <y>290</y>
+        <width>191</width>
         <height>25</height>
        </rect>
       </property>
@@ -130,14 +160,14 @@
        <string/>
       </property>
      </widget>
-     <widget class="QLabel" name="fileOwnerLabel">
+     <widget class="QLabel" name="ownerLabel">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
-        <x>550</x>
-        <y>410</y>
+        <x>860</x>
+        <y>270</y>
         <width>62</width>
         <height>17</height>
        </rect>
@@ -150,7 +180,7 @@
       <property name="geometry">
        <rect>
         <x>860</x>
-        <y>410</y>
+        <y>220</y>
         <width>62</width>
         <height>17</height>
        </rect>
@@ -159,14 +189,14 @@
        <string>Version</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="fileVersionLineEdit">
+     <widget class="QLineEdit" name="versionLineEdit">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>860</x>
-        <y>430</y>
+        <y>240</y>
         <width>191</width>
         <height>25</height>
        </rect>
@@ -175,14 +205,14 @@
        <string/>
       </property>
      </widget>
-     <widget class="QLineEdit" name="fileSizeLineEdit">
+     <widget class="QLineEdit" name="sizeLineEdit">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>860</x>
-        <y>380</y>
+        <y>190</y>
         <width>191</width>
         <height>25</height>
        </rect>
@@ -195,7 +225,7 @@
       <property name="geometry">
        <rect>
         <x>860</x>
-        <y>360</y>
+        <y>170</y>
         <width>62</width>
         <height>17</height>
        </rect>
@@ -204,27 +234,27 @@
        <string>Size</string>
       </property>
      </widget>
-     <widget class="QDateTimeEdit" name="fileCreatedTimeEdit">
+     <widget class="QDateTimeEdit" name="createdTimeEdit">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>860</x>
-        <y>330</y>
+        <y>140</y>
         <width>191</width>
         <height>26</height>
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="fileCreatedLabel">
+     <widget class="QLabel" name="createdLabel">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>860</x>
-        <y>310</y>
+        <y>120</y>
         <width>101</width>
         <height>17</height>
        </rect>
@@ -233,27 +263,27 @@
        <string>Created</string>
       </property>
      </widget>
-     <widget class="QDateTimeEdit" name="fileLastModifiedTimeEdit">
+     <widget class="QDateTimeEdit" name="lastModifiedTimeEdit">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>860</x>
-        <y>280</y>
+        <y>90</y>
         <width>191</width>
         <height>26</height>
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="fileLastModifiedLabel">
+     <widget class="QLabel" name="lastModifiedLabel">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>860</x>
-        <y>260</y>
+        <y>70</y>
         <width>101</width>
         <height>17</height>
        </rect>
@@ -265,9 +295,9 @@
      <widget class="QPushButton" name="addDummyFileButton">
       <property name="geometry">
        <rect>
-        <x>700</x>
-        <y>490</y>
-        <width>121</width>
+        <x>860</x>
+        <y>390</y>
+        <width>131</width>
         <height>31</height>
        </rect>
       </property>
@@ -278,8 +308,8 @@
      <widget class="QPushButton" name="savePushButton">
       <property name="geometry">
        <rect>
-        <x>550</x>
-        <y>490</y>
+        <x>860</x>
+        <y>340</y>
         <width>131</width>
         <height>31</height>
        </rect>
@@ -291,11 +321,242 @@
      <widget class="QTreeView" name="treeView">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>20</y>
-        <width>511</width>
-        <height>731</height>
+        <x>90</x>
+        <y>40</y>
+        <width>441</width>
+        <height>921</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="permissionsLabel">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>550</x>
+        <y>270</y>
+        <width>91</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Permissions</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="retentionPolicyComboBox">
+      <property name="geometry">
+       <rect>
+        <x>550</x>
+        <y>240</y>
+        <width>281</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>Unknown</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Short term</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Mid term</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Long term</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Permanent</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Temporary</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="statusComboBox">
+      <property name="geometry">
+       <rect>
+        <x>550</x>
+        <y>340</y>
+        <width>281</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>Unknown</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Active</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Paused</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Awaiting approval</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Reviewed</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Archived</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Deleted</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLabel" name="statusLabel">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>550</x>
+        <y>320</y>
+        <width>91</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Status</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="retentionPolicyLabel">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>550</x>
+        <y>220</y>
+        <width>121</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Retention policy</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="permissionsComboBox">
+      <property name="geometry">
+       <rect>
+        <x>550</x>
+        <y>290</y>
+        <width>281</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>Unknown</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Read</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Write</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Execute</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Full control</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>No access</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Restricted</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QTableWidget" name="metadataTableWidget">
+      <property name="geometry">
+       <rect>
+        <x>550</x>
+        <y>390</y>
+        <width>281</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>281</width>
+        <height>0</height>
+       </size>
+      </property>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>32</number>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>21</number>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>1</string>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Key</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Value</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QLabel" name="metadataLabel">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>550</x>
+        <y>370</y>
+        <width>91</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Metadata</string>
       </property>
      </widget>
     </widget>
@@ -303,10 +564,10 @@
      <widget class="QTableView" name="databaseTableView">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>20</y>
+        <x>90</x>
+        <y>40</y>
         <width>911</width>
-        <height>711</height>
+        <height>921</height>
        </rect>
       </property>
       <property name="alternatingRowColors">
@@ -328,8 +589,8 @@
      <widget class="QComboBox" name="tableComboBox">
       <property name="geometry">
        <rect>
-        <x>930</x>
-        <y>50</y>
+        <x>1020</x>
+        <y>80</y>
         <width>171</width>
         <height>25</height>
        </rect>
@@ -363,8 +624,8 @@
      <widget class="QLabel" name="tableLabel">
       <property name="geometry">
        <rect>
-        <x>930</x>
-        <y>30</y>
+        <x>1020</x>
+        <y>60</y>
         <width>71</width>
         <height>17</height>
        </rect>
@@ -382,7 +643,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1135</width>
+     <width>1255</width>
      <height>22</height>
     </rect>
    </property>

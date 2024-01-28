@@ -10,11 +10,14 @@ CONFIG += c++11
 
 SOURCES += \
     DatabaseManager.cpp \
+    FileEnums.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     DatabaseManager.h \
+    FileEnums.h \
+    UserData.h \
     mainwindow.h
 
 FORMS += \
